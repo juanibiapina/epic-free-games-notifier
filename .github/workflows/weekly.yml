@@ -1,0 +1,40 @@
+name: Weekly
+
+on:
+  push:
+  schedule:
+    - cron: 0 6 * * 1
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v12
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Install dependencies
+        run: |
+          nix-shell --pure --run "bundle install"
+
+      - name: Run Scrapper
+        run: |
+          nix-shell --pure --run "bundle exec ruby main.rb" >> $GITHUB_STEP_SUMMARY
+
+      - name: Send email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Epic Store Free Games
+          to: ${{secrets.TARGET_EMAIL}}
+          from: Epic Store Free Games
+          secure: true
+          html_body: file://email.html
