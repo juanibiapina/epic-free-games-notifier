@@ -1,0 +1,25 @@
+name: Push
+
+on:
+  push:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v12
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Install dependencies
+        run: |
+          nix-shell --pure --run "bundle install"
+
+      - name: Run Scrapper
+        run: |
+          nix-shell --pure --run "bundle exec ruby main.rb"

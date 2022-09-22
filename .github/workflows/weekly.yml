@@ -1,7 +1,7 @@
-name: Weekly
+name: Email notification
 
 on:
-  push:
+  workflow_dispatch:
   schedule:
     - cron: 0 6 * * 1
 
@@ -24,7 +24,7 @@ jobs:
 
       - name: Run Scrapper
         run: |
-          nix-shell --pure --run "bundle exec ruby main.rb" >> $GITHUB_STEP_SUMMARY
+          nix-shell --pure --run "bundle exec ruby main.rb"
 
       - name: Send email
         uses: dawidd6/action-send-mail@v3
@@ -34,7 +34,7 @@ jobs:
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
           subject: Epic Store Free Games
-          to: ${{secrets.TARGET_EMAIL}}
+          to: ${{secrets.TARGET_EMAILS}}
           from: Epic Store Free Games
           secure: true
           html_body: file://email.html
