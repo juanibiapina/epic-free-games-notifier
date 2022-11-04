@@ -4,7 +4,7 @@
 }:
 
 let
-  ruby_package = pkgs.parseRubyVersionFile {};
+  ruby_package = pkgs.parseRubyVersionFile ./.ruby-version;
 in
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
