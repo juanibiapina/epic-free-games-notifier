@@ -20,11 +20,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          nix-shell --pure --run "bundle install"
+          nix develop --command bundle install
 
       - name: Run Scrapper
         run: |
-          nix-shell --pure --run "bundle exec ruby main.rb"
+          nix develop --command bundle exec ruby main.rb
 
       - name: Send email
         uses: dawidd6/action-send-mail@v3
